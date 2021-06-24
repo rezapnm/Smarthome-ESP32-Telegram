@@ -52,6 +52,8 @@ char password[] = "purnamaa";
 
 float humidity, temperature;
 String dHTdata, userON, userOFF, lastMode;
+int nilaiLDR_1 = 0;
+int nilaiLDR_2 = 0;
 int Bot_mtbs = 0.0001;
 bool Start = false;
 bool intoAuto = false;
@@ -408,8 +410,112 @@ while(WiFi.status() == WL_CONNECTED)
      
      if(WiFi.status() == WL_CONNECTED && automatic == true)
      {
+        Serial.println("\n====== AUTOMATIC MODE ======");
+        Serial.print("LDR 1 = ");
+        Serial.print(nilaiLDR_1);
+        Serial.print("\tLDR 2 = ");
+        Serial.print(nilaiLDR_2);
+        Serial.print("\tTEMPERATURE = ");
+        Serial.println(temperature);
+        //printLocalTime();
+
+        // SEMUA LAMPU DAN KIPAS MENYALA ====> 1
+        if(nilaiLDR_1 <= 300 && nilaiLDR_2 <= 300 && temperature > 27){
+          digitalWrite(LAMPU_1, HIGH);
+          digitalWrite(LAMPU_2, HIGH);
+          digitalWrite(KIPAS, HIGH);
+          Serial.print("LAMPU 1 ON");
+          Serial.print("LAMPU 2 ON");
+          Serial.println("KIPAS ON");
+        }
+
+        // SEMUA LAMPU NYALA, KIPAS MATI ====> 2
+        if(nilaiLDR_1 <= 300 && nilaiLDR_2 <= 300 && temperature <= 27){
+          digitalWrite(LAMPU_1, HIGH);
+          digitalWrite(LAMPU_2, HIGH);
+          digitalWrite(KIPAS, LOW);
+          Serial.print("LAMPU 1 ON");
+          Serial.print("LAMPU 2 ON");
+          Serial.println("KIPAS OFF");
+        }
+
+        // LAMPU 1 MATI , LAMPU 2 DAN KIPAS NYALA ====> 3
+        if(nilaiLDR_1 > 300 && nilaiLDR_2 <= 300 && temperature > 27){
+          digitalWrite(LAMPU_1, LOW);
+          digitalWrite(LAMPU_2, HIGH);
+          digitalWrite(KIPAS, HIGH);
+          Serial.print("LAMPU 1 OFF");
+          Serial.print("LAMPU 2 ON");
+          Serial.println("KIPAS ON");
+        }
+
+        // LAMPU 1 DAN KIPAS MATI, LAMPU 2 NYALA ====> 4
+        if(nilaiLDR_1 > 300 && nilaiLDR_2 <= 300 && temperature <= 27){
+          digitalWrite(LAMPU_1, LOW);
+          digitalWrite(LAMPU_2, HIGH);
+          digitalWrite(KIPAS, LOW);
+          Serial.print("LAMPU 1 OFF");
+          Serial.print("LAMPU 2 ON");
+          Serial.println("KIPAS OFF");
+        }
+
+        // LAMPU 1 DAN KIPAS NYALA, LAMPU 2 MATI ====> 5
+        if(nilaiLDR_1 <= 300 && nilaiLDR_2 > 300 && temperature > 27){
+          digitalWrite(LAMPU_1, HIGH);
+          digitalWrite(LAMPU_2, LOW);
+          digitalWrite(KIPAS, HIGH);
+          Serial.print("LAMPU 1 ON");
+          Serial.print("LAMPU 2 OFF");
+          Serial.println("KIPAS ON");
+        }
+
+        // LAMPU 1 NYALA, LAMPU 2 DAN KIPAS MATI ====> 6
+        if(nilaiLDR_1 <= 300 && nilaiLDR_2 > 300 && temperature <= 27){
+          digitalWrite(LAMPU_1, HIGH);
+          digitalWrite(LAMPU_2, LOW);
+          digitalWrite(KIPAS, LOW);
+          Serial.print("LAMPU 1 ON");
+          Serial.print("LAMPU 2 OFF");
+          Serial.println("KIPAS OFF");
+        }
+
+        // KIPAS NYALA ====> 7
+        if(nilaiLDR_1 > 300 && nilaiLDR_2 > 300 && temperature > 27){
+          digitalWrite(LAMPU_1, LOW);
+          digitalWrite(LAMPU_2, LOW);
+          digitalWrite(KIPAS, HIGH);
+          Serial.print("LAMPU 1 OFF");
+          Serial.print("LAMPU 2 OFF");
+          Serial.println("KIPAS ON");
+        }
+
+        // SEMUA LAMPU DAN KIPAS MATI ====> 8
+        if(nilaiLDR_1 > 300 && nilaiLDR_2 > 300 && temperature <= 27){
+          digitalWrite(LAMPU_1, LOW);
+          digitalWrite(LAMPU_2, LOW);
+          digitalWrite(KIPAS, LOW);
+          Serial.print("LAMPU 1 OFF");
+          Serial.print("LAMPU 2 OFF");
+          Serial.println("KIPAS OFF");
+        }
+          
+//        if(nilaiLDR_1 <= 300){
+//          digitalWrite(LAMPU_1, HIGH);
+//          Serial.print("LAMPU 1 ON");
+//        }
+//        if(nilaiLDR_1 > 300){
+//          digitalWrite(LAMPU_1, LOW);
+//          Serial.print("LAMPU 1 OFF");
+//        }
+//        if(nilaiLDR_2 <= 300){
+//          digitalWrite(LAMPU_2, HIGH);
+//          Serial.println("LAMPU 2 ON");
+//        }
+//        if(nilaiLDR_2 > 300){
+//          digitalWrite(LAMPU_2, LOW);
+//          Serial.println("LAMPU 2 ON");
+//        }
       //handleNewMessages(numNewMessages);
-      
 //        Serial.print("Indicator On");
 //        digitalWrite(led_auto,HIGH);
 //        digitalWrite(led_manual,LOW);
@@ -417,22 +523,8 @@ while(WiFi.status() == WL_CONNECTED)
 //        delay(500);
 //        digitalWrite(LAMPU_1,LOW);
 //        delay(500);
-
-//        numNewMessages = bot.getUpdates(bot.last_message_received + 1);
-//        handleNewMessages(numNewMessages);
-        Serial.println("\n====== AUTOMATIC MODE ======");
-//        Serial.print("LDR 1 = ");
-//        Serial.print(nilaiLDR_1);
-//        Serial.print("\tLDR 2 = ");
-//        Serial.print(nilaiLDR_2);
-        Serial.print("\tTEMPERATURE = ");
-        Serial.println(temperature);
-        if (temperature >= 27){
-          digitalWrite(KIPAS, HIGH);
-        }
-        else {
-          digitalWrite(KIPAS, LOW);
-        }
+              //        numNewMessages = bot.getUpdates(bot.last_message_received + 1);
+              //        handleNewMessages(numNewMessages);
      }
      //manual = "true";
      Bot_lasttime = millis();
